@@ -1,1 +1,1 @@
-emergency.sh
+/Users/collin/scripts/emergency.sh
