@@ -1,0 +1,22 @@
+#!/bin/bash
+
+## email_pass
+##
+## This script allows cPanel admins to change an email account's password
+## from the command line. It takes advantage of cPanel's uapi to
+## accomplish this. It takes a single email address as input and prints
+## the new password in case it's needed. For security reasons, the password
+## should not be sent to the customer / client.
+
+EMAIL_ADDRESS=$1
+
+[[ -z "$EMAIL_ADDRESS" ]] && echo "Usage: $0 example@example.com" && exit 1
+
+USER=$(awk -F'@' '{print $1}' <<<"$EMAIL_ADDRESS")
+DOMAIN=$(awk -F'@' '{print $2}' <<<"$EMAIL_ADDRESS")
+NEWPASS=$(tr -dc [:alnum:] < /dev/urandom | head -c 16)
+OWNER=$(/scripts/whoowns "$DOMAIN")
+
+STATUS=$(uapi --user="$OWNER" Email passwd_pop email="$USER" password="$NEWPASS" domain="$DOMAIN" | awk '/status/ {print $2}')
+[[ "$STATUS" -eq "1" ]] && echo "Password successfully reset to: $NEWPASS" ||
+echo "Something failed, are you sure this email address exists on this server?"
