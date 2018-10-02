@@ -1,0 +1,18 @@
+#!/bin/bash
+
+## cpanel_pass
+##
+## This script allows cPanel admins to change an account's password
+## from the command line. It takes a single account as input and prints
+## the new password in case it's needed. For security reasons, the password
+## should not be sent to the customer / client.
+
+ACCOUNT=$1
+
+[[ -z "$ACCOUNT" ]] && echo "Usage: $0 cpanel_username" && exit 1
+
+NEWPASS=$(tr -dc [:alnum:] < /dev/urandom | head -c 16)
+
+STATUS=$(/scripts/chpass $ACCOUNT $NEWPASS | grep "has been changed")
+[[ -z $STATUS ]] && echo "Password successfully reset to: $NEWPASS" ||
+echo "Password change failed, are you sure $ACCOUNT exists on this server?"
