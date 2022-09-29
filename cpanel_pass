@@ -6,9 +6,8 @@
 ## from the command line. It takes a single account as input and prints
 ## the new password in case it's needed. For security reasons, the password
 ## should not be sent to the customer / client.
-##
-## To allow this script to work, the following needs to be run/checked:
-## `export ALLOW_PASSWORD_CHANGE=1`
+
+export ALLOW_PASSWORD_CHANGE=1
 
 ACCOUNT=$1
 
@@ -17,5 +16,5 @@ ACCOUNT=$1
 NEWPASS=$(tr -dc [:alnum:] < /dev/urandom | head -c 16)
 
 STATUS=$(/scripts/chpass $ACCOUNT $NEWPASS | grep "has been changed")
-[[ -z $STATUS ]] && echo "Password successfully reset to: $NEWPASS" ||
+[[ -z $STATUS ]] && echo "Password successfully reset to: $NEWPASS" || \
 echo "Password change failed, are you sure $ACCOUNT exists on this server?"
