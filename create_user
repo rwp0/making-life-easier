@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 ## This script allows Nginx server users to quickly and easily create new
 ## accounts. It takes in a username of your choice and the domain name that
